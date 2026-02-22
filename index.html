@@ -51,6 +51,318 @@ body {
 @keyframes spin    { to { transform: rotate(360deg); } }
 @keyframes pulse   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
 
+/* ══════════════════════════════════════════
+   ── PARDA (CURTAIN INTRO) ──
+══════════════════════════════════════════ */
+@keyframes pardaRise {
+  0%   { transform: translateY(0) scaleY(1); }
+  100% { transform: translateY(-105%) scaleY(1); }
+}
+@keyframes pardaWave {
+  0%   { d: path("M0,0 Q12.5,18 25,0 Q37.5,-18 50,0 Q62.5,18 75,0 Q87.5,-18 100,0 L100,100 L0,100 Z"); }
+  50%  { d: path("M0,0 Q12.5,-18 25,0 Q37.5,18 50,0 Q62.5,-18 75,0 Q87.5,18 100,0 L100,100 L0,100 Z"); }
+  100% { d: path("M0,0 Q12.5,18 25,0 Q37.5,-18 50,0 Q62.5,18 75,0 Q87.5,-18 100,0 L100,100 L0,100 Z"); }
+}
+@keyframes pardaFadeAway {
+  0%   { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes tapPulse {
+  0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(201,148,42,0.5), 0 8px 32px rgba(0,0,0,0.4); }
+  50%      { transform: scale(1.08); box-shadow: 0 0 0 14px rgba(201,148,42,0), 0 8px 40px rgba(0,0,0,0.5); }
+}
+@keyframes tapRing {
+  0%   { transform: scale(0.7); opacity: 0.9; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+@keyframes pardaGlow {
+  0%,100% { opacity: 0.5; }
+  50%      { opacity: 1; }
+}
+@keyframes floatUpDown {
+  0%,100% { transform: translateY(0px); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes petalIntro {
+  0%   { transform: translateY(-60px) rotate(0deg) translateX(0px); opacity: 0; }
+  8%   { opacity: 0.85; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateY(110vh) rotate(380deg) translateX(30px); opacity: 0; }
+}
+@keyframes shimmerBorder {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes nameReveal {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes divaFlicker {
+  0%,100% { opacity: 1; transform: scale(1); }
+  40%     { opacity: 0.75; transform: scale(0.93); }
+  70%     { opacity: 0.9; transform: scale(1.06); }
+}
+
+/* ── Parda Overlay ── */
+#parda {
+  position: fixed; inset: 0; z-index: 9999;
+  cursor: pointer; overflow: hidden;
+  /* Prevent scroll on body while parda is up */
+}
+#parda.opening {
+  animation: pardaFadeAway 1.4s ease-in-out forwards;
+  pointer-events: none;
+}
+#parda.opening .parda-curtain {
+  animation: pardaRise 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+#parda.opening .parda-bottom-hem {
+  animation: pardaRise 1.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+#parda.opening .parda-content { opacity: 0; transition: opacity 0.2s; }
+
+/* ── Curtain fabric ── */
+.parda-curtain {
+  position: absolute;
+  inset: 0;
+  bottom: -6px;
+  transform-origin: top center;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(181,32,64,0.5) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 70%, rgba(232,135,26,0.3) 0%, transparent 50%),
+    linear-gradient(175deg, #1A0408 0%, #3D0B18 20%, #6B0F22 45%, #8B1A2F 65%, #5A0D1E 80%, #1C0408 100%);
+  z-index: 1;
+}
+
+/* Fabric weave texture */
+.parda-curtain::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(90deg,
+      rgba(201,148,42,0.05) 0px, rgba(201,148,42,0.05) 1px,
+      transparent 1px, transparent 20px
+    ),
+    repeating-linear-gradient(180deg,
+      rgba(201,148,42,0.03) 0px, rgba(201,148,42,0.03) 1px,
+      transparent 1px, transparent 28px
+    );
+}
+
+/* Curtain vertical fold shadows */
+.parda-curtain::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(90deg,
+    transparent 0px, transparent 44px,
+    rgba(0,0,0,0.18) 44px, rgba(0,0,0,0.18) 48px,
+    transparent 48px, transparent 90px,
+    rgba(0,0,0,0.08) 90px, rgba(0,0,0,0.08) 92px
+  );
+}
+
+/* Gold top hem rod */
+.parda-top-rod {
+  position: absolute; top: 0; left: 0; right: 0; height: 22px; z-index: 5;
+  background: linear-gradient(180deg, #8B5A00 0%, #C9942A 40%, #E8C97A 60%, #C9942A 80%, #7A4A00 100%);
+  box-shadow: 0 3px 16px rgba(0,0,0,0.5), 0 1px 0 rgba(255,220,130,0.3) inset;
+}
+.parda-top-rod::before {
+  content: '';
+  position: absolute; inset: 3px 0;
+  background: repeating-linear-gradient(90deg,
+    rgba(0,0,0,0.2) 0px, rgba(0,0,0,0.2) 2px,
+    transparent 2px, transparent 18px,
+    rgba(255,220,100,0.25) 18px, rgba(255,220,100,0.25) 20px,
+    transparent 20px, transparent 36px
+  );
+}
+
+/* Wavy bottom hem */
+.parda-bottom-hem {
+  position: absolute; bottom: 0; left: -2%; right: -2%;
+  height: 60px; z-index: 6;
+  transform-origin: top center;
+}
+
+/* Left & right side gold borders */
+.parda-side-border-l,
+.parda-side-border-r {
+  position: absolute; top: 22px; bottom: 0; width: 18px; z-index: 4;
+  background: linear-gradient(180deg,
+    rgba(201,148,42,0.8) 0%,
+    rgba(232,135,26,0.6) 30%,
+    rgba(201,148,42,0.8) 60%,
+    rgba(232,135,26,0.5) 100%
+  );
+  animation: pardaGlow 3s ease-in-out infinite;
+}
+.parda-side-border-l { left: 0; }
+.parda-side-border-r { right: 0; }
+.parda-side-border-l::after, .parda-side-border-r::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(180deg,
+    rgba(255,220,100,0.3) 0px, rgba(255,220,100,0.3) 6px,
+    transparent 6px, transparent 14px
+  );
+}
+
+/* ── Floating petals ── */
+.parda-petals {
+  position: absolute; inset: 0; z-index: 7; pointer-events: none; overflow: hidden;
+}
+.parda-petal {
+  position: absolute; border-radius: 50% 50% 50% 0;
+  animation: petalIntro linear infinite; opacity: 0;
+}
+
+/* ── Content on top of curtain ── */
+.parda-content {
+  position: absolute; inset: 0; z-index: 8;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 20px;
+  transition: opacity 0.25s;
+}
+
+/* ── Two name columns ── */
+.parda-names-row {
+  display: flex; align-items: stretch; justify-content: center;
+  gap: 0; width: 100%; max-width: 900px;
+  margin-bottom: 28px;
+}
+
+.parda-name-col {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px 16px; gap: 10px;
+  animation: nameReveal 0.8s ease forwards;
+}
+.parda-name-col.bride  { animation-delay: 0.3s; opacity: 0; }
+.parda-name-col.groom  { animation-delay: 0.5s; opacity: 0; }
+
+.parda-role-tag {
+  font-family: "Cinzel", serif;
+  font-size: clamp(7px, 1.5vw, 10px);
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(201,148,42,0.4);
+}
+.bride .parda-role-tag  { color: var(--pink); border-color: rgba(212,86,122,0.4); }
+.groom .parda-role-tag  { color: var(--gold); border-color: rgba(201,148,42,0.4); }
+
+.parda-person-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(26px, 6vw, 58px);
+  font-weight: 300; line-height: 1.1;
+  text-align: center;
+  animation: floatUpDown 4s ease-in-out infinite;
+}
+.bride .parda-person-name  { color: #F2C0CC; animation-delay: 0.2s; }
+.groom .parda-person-name { color: var(--gold-light); }
+
+.parda-surname {
+  font-family: "Cinzel", serif;
+  font-size: clamp(9px, 1.8vw, 13px);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.bride .parda-surname  { color: #F2C0CC; }
+.groom .parda-surname { color: var(--gold-light); }
+
+/* Middle divider with weds */
+.parda-center-div {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 16px; gap: 12px; flex-shrink: 0;
+}
+.parda-weds {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(13px, 2.5vw, 20px);
+  font-style: italic; color: var(--saffron-light);
+  letter-spacing: 0.2em;
+}
+.parda-vert-line {
+  width: 1px; height: 60px;
+  background: linear-gradient(180deg, transparent, rgba(201,148,42,0.5), transparent);
+}
+.parda-diya-center {
+  animation: divaFlicker 2s ease-in-out infinite;
+}
+
+/* ── Bottom info ── */
+.parda-info {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  text-align: center;
+}
+.parda-shlok {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(11px, 2vw, 15px);
+  font-style: italic;
+  color: rgba(245,192,122,0.7);
+  line-height: 1.9; text-align: center;
+  max-width: 480px;
+  margin-bottom: 4px;
+}
+.parda-date-line {
+  font-family: "Cinzel", serif;
+  font-size: clamp(9px, 1.8vw, 12px);
+  letter-spacing: 0.45em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+/* ── Tap button ── */
+.parda-tap-area {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 10px;
+  margin-top: 16px;
+}
+.parda-tap-btn {
+  position: relative;
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--maroon-deep), var(--maroon), var(--saffron));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  animation: tapPulse 2s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(201,148,42,0.5), 0 8px 32px rgba(0,0,0,0.5);
+  z-index: 1;
+}
+.parda-tap-ring {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 68px; height: 68px;
+  margin: -34px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201,148,42,0.7);
+  animation: tapRing 2s ease-out infinite;
+}
+.parda-tap-ring:nth-child(2) { animation-delay: 0.65s; }
+.parda-tap-ring:nth-child(3) { animation-delay: 1.3s; }
+.parda-tap-label {
+  font-family: "Cinzel", serif;
+  font-size: clamp(8px, 1.5vw, 10px);
+  letter-spacing: 0.45em;
+  color: rgba(245,192,122,0.75);
+  text-transform: uppercase;
+}
+
+/* mobile tweaks */
+@media (max-width: 500px) {
+  .parda-names-row { gap: 0; }
+  .parda-name-col  { padding: 12px 8px; }
+  .parda-center-div { padding: 0 8px; }
+  .parda-vert-line  { height: 36px; }
+  .parda-shlok { font-size: 11px; }
+}
+
 /* ── HERO ── */
 .hero {
   min-height: 100vh;
@@ -756,6 +1068,83 @@ footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; hei
 </style>
 </head>
 <body>
+
+<!-- ══════════════ PARDA (CURTAIN INTRO) ══════════════ -->
+<div id="parda">
+
+  <!-- Curtain fabric -->
+  <div class="parda-curtain">
+    <div class="parda-top-rod"></div>
+    <div class="parda-side-border-l"></div>
+    <div class="parda-side-border-r"></div>
+
+    <!-- Wavy bottom hem SVG -->
+    <svg class="parda-bottom-hem" viewBox="0 0 100 18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,4 Q6.25,0 12.5,4 Q18.75,8 25,4 Q31.25,0 37.5,4 Q43.75,8 50,4 Q56.25,0 62.5,4 Q68.75,8 75,4 Q81.25,0 87.5,4 Q93.75,8 100,4 L100,18 L0,18 Z"
+        fill="#6B0F22" opacity="0.95"/>
+      <path d="M0,6 Q6.25,2 12.5,6 Q18.75,10 25,6 Q31.25,2 37.5,6 Q43.75,10 50,6 Q56.25,2 62.5,6 Q68.75,10 75,6 Q81.25,2 87.5,6 Q93.75,10 100,6 L100,18 L0,18 Z"
+        fill="#C9942A" opacity="0.25"/>
+    </svg>
+
+    <!-- Floating petals -->
+    <div class="parda-petals" id="pardaPetals"></div>
+  </div>
+
+  <!-- Content overlay -->
+  <div class="parda-content" id="pardaContent">
+
+    <!-- Names row: Bride | divider | Groom -->
+    <div class="parda-names-row">
+
+      <!-- Centre content only -->
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding: 24px 20px; text-align:center;">
+
+        <div style="font-family:'Cinzel',serif; font-size:clamp(9px,1.8vw,12px); letter-spacing:0.5em; color:var(--gold); text-transform:uppercase; animation: nameReveal 0.6s ease forwards;">
+          ॐ श्री गणेशाय नमः
+        </div>
+
+        <div style="font-family:'Cormorant Garamond',serif; font-size:clamp(28px,7vw,64px); font-weight:300; color:var(--gold-light); line-height:1.2; animation: nameReveal 0.8s 0.2s ease both; opacity:0;">
+          शुभ विवाह
+        </div>
+
+        <div style="font-family:'Cormorant Garamond',serif; font-size:clamp(14px,3vw,24px); font-style:italic; color:var(--saffron-light); letter-spacing:0.1em; animation: nameReveal 0.8s 0.4s ease both; opacity:0;">
+          A Wedding Invitation
+        </div>
+
+        <div style="display:flex; align-items:center; gap:14px; justify-content:center; animation: nameReveal 0.8s 0.6s ease both; opacity:0;">
+          <div style="height:1px; width:60px; background:linear-gradient(90deg,transparent,var(--gold));"></div>
+          <svg width="18" height="18" viewBox="0 0 60 50" fill="none">
+            <path d="M30 48C30 48,8 34,8 18C8 10,18 6,30 14C42 6,52 10,52 18C52 34,30 48,30 48Z" stroke="#C9942A" stroke-width="2" fill="rgba(201,148,42,0.2)"/>
+          </svg>
+          <div style="height:1px; width:60px; background:linear-gradient(270deg,transparent,var(--gold));"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Shlok & date -->
+    <div class="parda-info">
+      <p class="parda-shlok">
+        "Vakratunda Mahakaya, Suryakoti Samaprabha<br>
+        Nirvighnam Kuru Me Deva, Sarva Karyeshu Sarvada"
+      </p>
+      <div class="parda-date-line">30th April 2026 &nbsp;·&nbsp; Darbhanga, Bihar</div>
+    </div>
+
+    <!-- Tap button -->
+    <div class="parda-tap-area">
+      <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+        <div class="parda-tap-ring"></div>
+        <div class="parda-tap-ring"></div>
+        <div class="parda-tap-ring"></div>
+        <div class="parda-tap-btn">🪔</div>
+      </div>
+      <div class="parda-tap-label">— Tap anywhere to open —</div>
+    </div>
+
+  </div>
+</div>
 
 <!-- ══════════════ HERO ══════════════ -->
 <section class="hero">
@@ -1564,7 +1953,36 @@ document.querySelectorAll('[data-reveal]').forEach((el,i)=>{
   });
 })();
 
-// ── Background Music ──
+// ── Parda (Curtain Lift) ──
+(function(){
+  const parda   = document.getElementById('parda');
+  if (!parda) return;
+
+  // Scatter petals on curtain
+  const petalsEl = document.getElementById('pardaPetals');
+  const pc = ['#E8A080','#C8516B','#E8C97A','#F5C07A','#D4567A','#C9942A'];
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'parda-petal';
+    const s = 6 + Math.random() * 10;
+    p.style.cssText = `left:${Math.random()*100}%;width:${s}px;height:${s*1.5}px;background:${pc[Math.floor(Math.random()*pc.length)]};animation-duration:${9+Math.random()*10}s;animation-delay:${Math.random()*14}s;transform:rotate(${Math.random()*360}deg);`;
+    petalsEl.appendChild(p);
+  }
+
+  function openParda() {
+    audioPlay();
+    parda.classList.add('opening');
+    setTimeout(() => { parda.style.display = 'none'; }, 1500);
+  }
+
+  parda.addEventListener('click', openParda);
+  parda.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    openParda();
+  }, { passive: false });
+})();
+// ── Audio ──
+let audioPlay = function(){};
 (function(){
   const audio = document.createElement('audio');
   audio.src = './wedding-song.mp3';
@@ -1572,26 +1990,9 @@ document.querySelectorAll('[data-reveal]').forEach((el,i)=>{
   audio.volume = 0.35;
   audio.preload = 'auto';
   document.body.appendChild(audio);
-
-  let started = false;
-
-  function tryPlay() {
-    if (started) return;
-    audio.play().then(() => {
-      started = true;
-    }).catch(() => {});
-  }
-
-  window.addEventListener('load', tryPlay);
-
-  const events = ['click','touchstart','touchend','mousedown','pointerdown','keydown','scroll','wheel'];
-  function onInteraction() {
-    tryPlay();
-    if (started) {
-      events.forEach(ev => document.removeEventListener(ev, onInteraction, true));
-    }
-  }
-  events.forEach(ev => document.addEventListener(ev, onInteraction, { capture: true, passive: true }));
+  audioPlay = function(){
+    audio.play().catch(()=>{});
+  };
 })();
 </script>
 </body>
