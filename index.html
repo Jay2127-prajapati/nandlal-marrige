@@ -1582,38 +1582,40 @@ document.querySelectorAll('[data-reveal]').forEach((el,i)=>{
 })();
 
 // ── Background Music ──
-// Place your song file (e.g. wedding-song.mp3) next to this HTML file
-// and update the src below. Supported formats: .mp3 .ogg .wav
+// 1. Put your song file in your Git repo (same folder as index.html)
+// 2. Change the filename below to match your file
 (function(){
   const audio = document.createElement('audio');
-  audio.src = './wedding-song.mp3'; // ← change this to your song filename
+  audio.src = './wedding-song.mp3'; // ← your song filename here
   audio.loop = true;
   audio.volume = 0.35;
   audio.preload = 'auto';
+  document.body.appendChild(audio); // must be in DOM for some browsers
 
   let started = false;
 
   function tryPlay() {
     if (started) return;
-    const p = audio.play();
-    if (p !== undefined) {
-      p.then(() => { started = true; })
-       .catch(() => {}); // silently fail if still blocked
-    }
+    audio.play().then(() => {
+      started = true;
+    }).catch(() => {
+      // Browser still blocking — wait for interaction
+    });
   }
 
-  // Try immediately (works on some browsers / when muted autoplay is allowed)
-  tryPlay();
+  // Try on load (works on Firefox & some mobile)
+  window.addEventListener('load', tryPlay);
 
-  // Fallback: start on very first user interaction of any kind
-  const events = ['click','touchstart','touchend','keydown','scroll','pointerdown'];
+  // Fire on EVERY possible first interaction
+  const events = ['click','touchstart','touchend','mousedown','pointerdown','keydown','scroll','wheel'];
   function onInteraction() {
     tryPlay();
     if (started) {
-      events.forEach(ev => document.removeEventListener(ev, onInteraction));
+      events.forEach(ev => document.removeEventListener(ev, onInteraction, true));
     }
   }
-  events.forEach(ev => document.addEventListener(ev, onInteraction, { once: false, passive: true }));
+  // Use capture:true so it fires before anything else
+  events.forEach(ev => document.addEventListener(ev, onInteraction, { capture: true, passive: true }));
 })();
 </script>
 </body>
